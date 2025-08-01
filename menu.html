@@ -216,17 +216,26 @@
         .price-grid span:nth-child(even) {
             justify-self: end;
         }
+
+        /* == UI POLISH: SMOOTH ACCORDION ANIMATION == */
         .ingredients {
-            display: none;
-            padding: 15px 0 5px 15px;
-            margin-top: 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding-top 0.4s ease-out, margin-top 0.4s ease-out;
+            padding: 0 0 0 15px;
+            margin-top: 0;
             font-size: 1em;
             color: #9affab;
             line-height: 1.5;
             border-left: 2px solid rgba(0, 255, 65, 0.4);
             word-wrap: break-word;
         }
-        .menu-item.active .ingredients { display: block; }
+        .menu-item.active .ingredients {
+            max-height: 20em; /* Generous max height for animation */
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
         .menu-item.active .item-name {
             white-space: normal;
             overflow: visible;
@@ -261,7 +270,6 @@
             font-size: 0.9em;
         }
         
-        /* == VIBE FEATURE: SYSTEM STATUS FOOTER == */
         .system-status {
             margin-top: 40px;
             padding-top: 20px;
@@ -357,7 +365,7 @@
         </div>
         
         <div class="tab-content" id="snacks">
-             <div class="kitchen-note">Available until 1 hr before bar close</div>
+            <div class="kitchen-note">Available until 1 hr before bar close</div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Hot Chips">Hot Chips</span><span class="item-price price-grid"><span>SML</span><span>$8</span><span>LRG</span><span>$10</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span><span class="item-price price-grid"><span>SML</span><span>$10</span><span>LRG</span><span>$12</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="American hot dog with tomato sauce and mustard."></div></div>
@@ -377,7 +385,7 @@
         <footer class="system-status">
             <p>> LOCAL TIME: <span id="live-time">--:--:--</span></p>
             <p>> KITCHEN STATUS: <span id="kitchen-status">...</span></p>
-            <p>> WI-FI_NETWORK: N/A / PW: ...</p>
+            <p>> WI-FI_NETWORK: Flippd_Guest / PW: get_flippd</p>
         </footer>
     </div>
 
@@ -460,7 +468,6 @@
             }
             populateTaps(tapData);
 
-            // --- System Status Footer Logic ---
             const timeEl = document.getElementById('live-time');
             const kitchenStatusEl = document.getElementById('kitchen-status');
             
@@ -468,7 +475,6 @@
                 const now = new Date();
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
-                // Kitchen closes at 8:30 PM (20:30)
                 if (hours > 20 || (hours === 20 && minutes >= 30)) {
                     kitchenStatusEl.textContent = "OFFLINE [CLOSES @ 8:30PM]";
                     kitchenStatusEl.className = 'status-offline';
@@ -477,18 +483,14 @@
                     kitchenStatusEl.className = 'status-online';
                 }
             }
-
             function updateTime() {
                 const now = new Date().toLocaleTimeString('en-AU');
                 timeEl.textContent = now;
             }
-            
             updateKitchenStatus();
             setInterval(updateTime, 1000);
             updateTime();
 
-
-            // --- Event Listeners ---
             tabs.addEventListener('click', (event) => {
                 const clickedButton = event.target.closest('.tab-button');
                 if (!clickedButton) return;
@@ -531,7 +533,6 @@
             });
         });
 
-        // --- Matrix Digital Rain Background ---
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
