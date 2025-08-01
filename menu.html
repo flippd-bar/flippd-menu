@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flipp'd Classics - Cyberpunk Menu</title>
+    <title>Flipp'd - Menu</title>
     <style>
         /* --- Base & Glitch Styling --- */
         @keyframes glitch-anim {
@@ -24,7 +24,7 @@
             overflow-x: hidden;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
         }
 
@@ -41,26 +41,60 @@
 
         /* --- Main Menu Container --- */
         .container {
-            max-width: 650px;
-            width: 90%;
+            max-width: 700px;
+            width: 95%;
             margin: 40px auto;
             padding: 25px 35px;
-            background: rgba(10, 25, 10, 0.4);
+            background: rgba(10, 25, 10, 0.5);
             border: 1px solid rgba(0, 255, 65, 0.5);
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(5px);
             box-shadow: 0 0 15px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
             position: relative;
             z-index: 1;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             color: #fff;
             text-align: center;
             text-transform: uppercase;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00ff41, 0 0 30px #00ff41;
             animation: glitch-anim 3s infinite;
+        }
+
+        /* --- Tab Navigation --- */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.5);
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            color: #00ff41;
+            padding: 15px 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s, text-shadow 0.3s;
+            flex-grow: 1;
+        }
+        .tab-button:hover {
+            background-color: rgba(0, 255, 65, 0.1);
+        }
+        .tab-button.active {
+            color: #fff;
+            background-color: rgba(0, 255, 65, 0.2);
+            text-shadow: 0 0 8px #00ff41;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
 
         /* --- Menu Item Styling --- */
@@ -68,49 +102,127 @@
             padding: 18px 10px;
             border-bottom: 1px dashed rgba(0, 255, 65, 0.3);
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease;
         }
-
-        .menu-item:last-child {
+        .menu-item:last-of-type {
             border-bottom: none;
         }
-
-        .menu-item:hover {
-            background-color: rgba(0, 255, 65, 0.08);
-            transform: translateX(3px);
-        }
-
+        .menu-item:hover { background-color: rgba(0, 255, 65, 0.08); }
         .item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            pointer-events: none; /* Make text non-selectable on click */
+            gap: 20px;
         }
-
+        .item-details {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75em;
+            min-width: 0; 
+        }
         .item-name {
             font-size: 1.4em;
             letter-spacing: 0.1em;
             color: #e0e0e0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
+        .item-abv {
+            font-size: 0.9em;
+            color: #9affab;
+            font-style: italic;
+        }
         .item-price {
             font-size: 1.3em;
             color: #00ff41;
+            text-align: right;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 0 1.5em;
+            justify-items: start;
+        }
+        .price-grid span:nth-child(even) {
+            justify-self: end;
         }
 
         .ingredients {
             display: none;
-            padding-left: 15px;
-            margin-top: 15px;
+            padding: 15px 0 5px 15px;
+            margin-top: 10px;
             font-size: 1em;
             color: #9affab;
             line-height: 1.5;
             border-left: 2px solid rgba(0, 255, 65, 0.4);
         }
+        .menu-item.active .ingredients { display: block; }
         
-        .menu-item.active .ingredients {
-            display: block;
+        .menu-item.active .item-name {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
         }
+
+        h2.menu-category {
+            color: #e0e0e0;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px dashed rgba(0, 255, 65, 0.3);
+            padding-bottom: 10px;
+        }
+        .kitchen-note {
+            text-align: center;
+            font-style: italic;
+            color: #9affab;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(0, 255, 65, 0.3);
+        }
+        .order-note {
+            text-align: center;
+            color: #e0e0e0;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.5);
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .item-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5em;
+            }
+            .item-details {
+                min-width: 0;
+            }
+            .item-name {
+                font-size: 1.3em;
+                white-space: normal;
+                word-break: break-all;
+            }
+            .item-price {
+                text-align: left;
+            }
+            .price-grid {
+                 gap: 0 1em;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -118,114 +230,303 @@
     <canvas id="matrix-bg"></canvas>
 
     <div class="container">
-        <h1>Flipp'd Classics</h1>
+        <h1>Flipp'd Menu</h1>
 
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Purple Nurple</span>
-                <span class="item-price">$18</span>
-            </div>
-            <div class="ingredients">Blue curacao, vodka, grenadine & lemonade</div>
+        <div class="order-note">
+            Please order at the bar
         </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Kirby</span>
-                <span class="item-price">$18</span>
-            </div>
-            <div class="ingredients">Pink gin, butterscotch schnapps, lemonade & a dash of raspberry</div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="cocktails">Cocktails</button>
+            <button class="tab-button" data-tab="on-tap">On-Tap</button>
+            <button class="tab-button" data-tab="food">Food</button>
+            <button class="tab-button" data-tab="snacks">Late Snacks</button>
         </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Frogger</span>
-                <span class="item-price">$18</span>
+
+        <div class="tab-content active" id="cocktails">
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Purple Nurple">Purple Nurple</span><span class="item-price">$18</span></div>
+                <div class="ingredients">Blue curacao, vodka, grenadine & lemonade</div>
             </div>
-            <div class="ingredients">Midori, vodka, blue curacao, pineapple juice & a dash of lime juice</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Expresso Martini</span>
-                <span class="item-price">$18</span>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Kirby">Kirby</span><span class="item-price">$18</span></div>
+                <div class="ingredients">Pink gin, butterscotch schnapps, lemonade & a dash of raspberry</div>
             </div>
-            <div class="ingredients">Vodka, kahlua with cold brew expresso</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Long Island</span>
-                <span class="item-price">$22</span>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Frogger">Frogger</span><span class="item-price">$18</span></div>
+                <div class="ingredients">Midori, vodka, blue curacao, pineapple juice & a dash of lime juice</div>
             </div>
-            <div class="ingredients">Vodka, gin, bacardi, tequila triple sec with a dash of lemon juice & coke</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Red Lotus</span>
-                <span class="item-price">$22</span>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Expresso Martini">Expresso Martini</span><span class="item-price">$18</span></div>
+                <div class="ingredients">Vodka, kahlua with cold brew expresso</div>
             </div>
-            <div class="ingredients">Vodka, lychee liqueur, cranberry juice & a dash of lime juice</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Get Flipp'd</span>
-                <span class="item-price">$22</span>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Long Island">Long Island</span><span class="item-price">$22</span></div>
+                <div class="ingredients">Vodka, gin, bacardi, tequila triple sec with a dash of lemon juice & coke</div>
             </div>
-            <div class="ingredients">Vodka, gin, bacardi, tequila, blue curacao with a dash of lemon juice & lemonade</div>
-        </div>
-        <div class="menu-item">
-            <div class="item-header">
-                <span class="item-name">Watermelon Sour</span>
-                <span class="item-price">$24</span>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Red Lotus">Red Lotus</span><span class="item-price">$22</span></div>
+                <div class="ingredients">Vodka, lychee liqueur, cranberry juice & a dash of lime juice</div>
             </div>
-            <div class="ingredients">Midori, triple sec, watermelon liqueur, lemonade, raspberry & a sprinkle of citric acid</div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Get Flipp'd">Get Flipp'd</span><span class="item-price">$22</span></div>
+                <div class="ingredients">Vodka, gin, bacardi, tequila, blue curacao with a dash of lemon juice & lemonade</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Watermelon Sour">Watermelon Sour</span><span class="item-price">$24</span></div>
+                <div class="ingredients">Midori, triple sec, watermelon liqueur, lemonade, raspberry and a sprinkle of citric acid</div>
+            </div>
         </div>
+
+        <div class="tab-content" id="food">
+            <div class="kitchen-note">
+                Full food menu available until kitchen closes at 8:30pm
+            </div>
+            <h2 class="menu-category">Snacks</h2>
+            <div class="menu-item">
+                <div class="item-header">
+                    <span class="item-name" title="Hot Chips">Hot Chips</span>
+                    <span class="item-price price-grid">
+                        <span>SML</span><span>$8</span>
+                        <span>LRG</span><span>$10</span>
+                    </span>
+                </div>
+                <div class="ingredients">Served with sauce of your choice.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header">
+                    <span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span>
+                    <span class="item-price price-grid">
+                        <span>SML</span><span>$10</span>
+                        <span>LRG</span><span>$12</span>
+                    </span>
+                </div>
+                <div class="ingredients">Served with sauce of your choice.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div>
+                <div class="ingredients">American hot dog with tomato sauce and mustard.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Nuggets & Chips">Nuggets & Chips</span><span class="item-price">$10</span></div>
+                <div class="ingredients">5 chicken nuggets & chips served with sauce.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Spring Rolls">Spring Rolls</span><span class="item-price">$13</span></div>
+                <div class="ingredients">5 vegetarian spring rolls served with sweet chilli sauce.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Onion Rings">Onion Rings</span><span class="item-price">$10</span></div>
+                <div class="ingredients">Served with sauce of your choice.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Dagwood Dog">Dagwood Dog</span><span class="item-price">$8</span></div>
+                <div class="ingredients">Served with sauce of your choice.</div>
+            </div>
+
+            <h2 class="menu-category">Burgers</h2>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Get Flipp'd Burger">Get Flipp'd Burger</span><span class="item-price">$16</span></div>
+                <div class="ingredients">Juicy beef patty, american cheese, sliced pickles, fresh lettuce, tomato with special sauce served on a brioche bun. (Add $3 for GF)</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Cheese Burger">Cheese Burger</span><span class="item-price">$13</span></div>
+                <div class="ingredients">Juicy beef patty, american cheese, sliced pickles with special sauce served on a brioche bun. (Add $3 for GF)</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Chicken Burger">Chicken Burger</span><span class="item-price">$16</span></div>
+                <div class="ingredients">Crumbed chicken breast, american cheese, fresh lettuce, tomato with creamy aioli served on a brioche bun.</div>
+            </div>
+
+            <h2 class="menu-category">Desserts</h2>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Churros">Churros</span><span class="item-price">$10</span></div>
+                <div class="ingredients">4 churros rolled in cinnamon sugar, served with chocolate dipping sauce</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Jam Donut Bites">Jam Donut Bites</span><span class="item-price">$10</span></div>
+                <div class="ingredients">5 fluffy mini donut bites oozing with jam dusted with powered sugar</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Apple Pie Bites">Apple Pie Bites</span><span class="item-price">$10</span></div>
+                <div class="ingredients">5 sweet cinnamon-spiced juicy apple pie bites served with a scoop of vanilla ice cream</div>
+            </div>
+            
+            <h2 class="menu-category">Milkshakes</h2>
+             <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Milkshakes">Milkshakes</span><span class="item-price">$10</span></div>
+                <div class="ingredients">Chocolate, Strawberry, Vanilla, and Caramel served with whipped cream.</div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="snacks">
+            <div class="kitchen-note">
+                Available until 1 hr before bar close
+            </div>
+            <div class="menu-item">
+                <div class="item-header">
+                    <span class="item-name" title="Hot Chips">Hot Chips</span>
+                    <span class="item-price price-grid">
+                        <span>SML</span><span>$8</span>
+                        <span>LRG</span><span>$10</span>
+                    </span>
+                </div>
+                <div class="ingredients">Served with sauce of your choice</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header">
+                    <span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span>
+                    <span class="item-price price-grid">
+                        <span>SML</span><span>$10</span>
+                        <span>LRG</span><span>$12</span>
+                    </span>
+                </div>
+                <div class="ingredients">Served with sauce of your choice</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div>
+                <div class="ingredients">American hot dog with tomato sauce and mustard.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Nuggets & Chips">Nuggets & Chips</span><span class="item-price">$10</span></div>
+                <div class="ingredients">5 chicken nuggets & chips served with sauce.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Spring Rolls">Spring Rolls</span><span class="item-price">$13</span></div>
+                <div class="ingredients">5 vegetarian spring rolls served with sweet chilli sauce.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Onion Rings">Onion Rings</span><span class="item-price">$10</span></div>
+                <div class="ingredients">Served with sauce of your choice.</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Dagwood Dog">Dagwood Dog</span><span class="item-price">$8</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Churros">Churros</span><span class="item-price">$10</span></div>
+                <div class="ingredients">4 churros rolled in cinnamon sugar, served with chocolate dipping sauce</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Jam Donut Bites">Jam Donut Bites</span><span class="item-price">$10</span></div>
+                <div class="ingredients">5 fluffy mini donut bites oozing with jam dusted with powered sugar</div>
+            </div>
+            <div class="menu-item">
+                <div class="item-header"><span class="item-name" title="Apple Pie Bites">Apple Pie Bites</span><span class="item-price">$10</span></div>
+                <div class="ingredients">5 sweet cinnamon-spiced juicy apple pie bites served with a scoop of vanilla ice cream</div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="on-tap">
+            <div id="on-tap-list"></div>
+        </div>
+
     </div>
 
     <script>
-        // --- Interactive Menu Logic ---
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', () => {
-                // Optional: Close other items when one is opened
-                /*
-                document.querySelectorAll('.menu-item.active').forEach(activeItem => {
-                    if (activeItem !== item) {
-                        activeItem.classList.remove('active');
-                    }
+        // --- On-Tap Data ---
+        const tapData = [
+            { type: "Beer", name: "Cyber-Lager", description: "A crisp, refreshing pilsner with a shocking twist.", abv: "4.5%", schooner: "$10", pint: "$12" },
+            { type: "Beer", name: "Glitch Ale", description: "A hazy IPA that seems to rewrite its flavor profile with every sip.", abv: "6.2%", schooner: "$11", pint: "$13" },
+            { type: "Beer", name: "Data Stout", description: "A dark, roasty stout with notes of coffee and dark chocolate.", abv: "5.8%", schooner: "$12", pint: "$14" },
+            { type: "Other", name: "Quantum Cider", description: "A dry apple cider that exists in a superposition of sweet and tart.", abv: "5.2%", schooner: "$10", pint: "$12" },
+            { type: "Other", name: "Firewall Red", description: "An Irish Red Ale with a malty backbone and a clean finish.", abv: "5.0%", schooner: "$10", pint: "$12" }
+        ];
+
+        // --- Main App Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const container = document.querySelector('.container');
+            const tabs = document.querySelector('.tabs');
+
+            // --- Tab Navigation Logic ---
+            tabs.addEventListener('click', (event) => {
+                const clickedButton = event.target.closest('.tab-button');
+                if (!clickedButton) return;
+
+                // Collapse any open menu items before switching tabs
+                container.querySelectorAll('.menu-item.active').forEach(item => {
+                    item.classList.remove('active');
                 });
-                */
-                item.classList.toggle('active');
+
+                tabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                clickedButton.classList.add('active');
+                const targetTab = clickedButton.getAttribute('data-tab');
+                document.getElementById(targetTab).classList.add('active');
             });
+
+            // --- Accordion Menu Item Logic ---
+            container.addEventListener('click', (event) => {
+                const menuItem = event.target.closest('.menu-item');
+                if (menuItem) {
+                    // This prevents clicks on links inside ingredients from closing the accordion
+                    if (event.target.closest('.ingredients a')) {
+                        return;
+                    }
+                    // Don't toggle if the click is on the header itself, only on the item
+                    if (event.target.classList.contains('menu-item') || event.target.closest('.item-header')) {
+                         menuItem.classList.toggle('active');
+                    }
+                }
+            });
+
+            // --- On-Tap List Builder ---
+            function populateTaps(taps) {
+                const tapListContainer = document.getElementById('on-tap-list');
+                if (!tapListContainer) return;
+
+                let content = '';
+                let currentType = '';
+
+                taps.forEach(tap => {
+                    if (tap.type !== currentType) {
+                        currentType = tap.type;
+                        content += `<h2 class="menu-category">${currentType}</h2>`;
+                    }
+                    content += `
+                        <div class="menu-item">
+                            <div class="item-header">
+                                <div class="item-details">
+                                    <span class="item-name" title="${tap.name}">${tap.name}</span>
+                                    <span class="item-abv">${tap.abv}</span>
+                                </div>
+                                <span class="item-price price-grid">
+                                    <span>Schooner</span><span>${tap.schooner}</span>
+                                    <span>Pint</span><span>${tap.pint}</span>
+                                </span>
+                            </div>
+                            <div class="ingredients">${tap.description}</div>
+                        </div>
+                    `;
+                });
+
+                tapListContainer.innerHTML = content;
+            }
+
+            populateTaps(tapData);
         });
+
 
         // --- Matrix Digital Rain Background ---
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
-
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
-
+        const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const fontSize = 16;
         const columns = canvas.width / fontSize;
-
         const rainDrops = [];
-
-        for (let x = 0; x < columns; x++) {
-            rainDrops[x] = 1;
-        }
+        for (let x = 0; x < columns; x++) { rainDrops[x] = 1; }
 
         const draw = () => {
             ctx.fillStyle = 'rgba(13, 13, 13, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.fillStyle = '#00ff41';
             ctx.font = fontSize + 'px monospace';
-
             for (let i = 0; i < rainDrops.length; i++) {
                 const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
                 ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
                 if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     rainDrops[i] = 0;
                 }
@@ -233,7 +534,7 @@
             }
         };
         
-        setInterval(draw, 30);
+        let rainInterval = setInterval(draw, 33);
         
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
