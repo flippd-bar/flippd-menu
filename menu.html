@@ -14,6 +14,9 @@
             80% { transform: translate(3px, -3px); clip-path: polygon(0 15%, 100% 15%, 100% 35%, 0 35%); }
             100% { transform: translate(0); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
         }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
 
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -26,6 +29,48 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
+        }
+
+        /* VIBE FEATURE: CRT SCANLINES */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 1px, transparent 1px, transparent 3px);
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* VIBE FEATURE: Custom Loading Animation */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.75s ease;
+        }
+        #loading-text {
+            font-size: 1.5rem;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+            text-transform: uppercase;
+        }
+        #loading-text::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        body.loaded #preloader {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* --- Digital Rain Background --- */
@@ -51,6 +96,13 @@
             box-shadow: 0 0 15px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
             position: relative;
             z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        body.loaded .container {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         h1 {
@@ -84,17 +136,27 @@
         }
         .tab-button:hover {
             background-color: rgba(0, 255, 65, 0.1);
+            text-shadow: 0.5px 0 1px #ff0000, -0.5px 0 1px #00ffff;
         }
         .tab-button.active {
             color: #fff;
             background-color: rgba(0, 255, 65, 0.2);
             text-shadow: 0 0 8px #00ff41;
         }
-        .tab-content {
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* VIBE FEATURE: "Accessing..." Message Style */
+        #accessing-message {
             display: none;
+            text-align: center;
+            padding: 40px 0;
+            font-size: 1.2rem;
+            text-transform: uppercase;
         }
-        .tab-content.active {
-            display: block;
+        #accessing-message::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
         }
 
         /* --- Menu Item Styling --- */
@@ -108,17 +170,21 @@
             border-bottom: none;
         }
         .menu-item:hover { background-color: rgba(0, 255, 65, 0.08); }
+        .menu-item:hover .item-name {
+            text-shadow: 0.5px 0 1px #ff0000, -0.5px 0 1px #00ffff;
+        }
         .item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
+            pointer-events: none;
         }
         .item-details {
             display: flex;
             align-items: baseline;
             gap: 0.75em;
-            min-width: 0; 
+            min-width: 0;
         }
         .item-name {
             font-size: 1.4em;
@@ -127,6 +193,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: text-shadow 0.2s;
         }
         .item-abv {
             font-size: 0.9em;
@@ -159,6 +226,7 @@
             color: #9affab;
             line-height: 1.5;
             border-left: 2px solid rgba(0, 255, 65, 0.4);
+            word-wrap: break-word;
         }
         .menu-item.active .ingredients { display: block; }
         
@@ -178,54 +246,48 @@
             border-bottom: 1px dashed rgba(0, 255, 65, 0.3);
             padding-bottom: 10px;
         }
-        .kitchen-note {
+        .kitchen-note, .order-note {
             text-align: center;
-            font-style: italic;
-            color: #9affab;
-            font-size: 0.9em;
-            margin-bottom: 25px;
             padding-bottom: 15px;
+            margin-bottom: 25px;
             border-bottom: 1px dashed rgba(0, 255, 65, 0.3);
         }
         .order-note {
-            text-align: center;
-            color: #e0e0e0;
-            font-size: 1.1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 255, 65, 0.5);
+             color: #e0e0e0;
+             font-size: 1.1em;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+             border-bottom-style: solid;
+        }
+        .kitchen-note {
+            font-style: italic;
+            color: #9affab;
+            font-size: 0.9em;
         }
         
         @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
+            h1 { font-size: 2rem; }
             .item-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5em;
             }
-            .item-details {
-                min-width: 0;
-            }
+            .item-details { min-width: 0; }
             .item-name {
                 font-size: 1.3em;
                 white-space: normal;
                 word-break: break-all;
             }
-            .item-price {
-                text-align: left;
-            }
-            .price-grid {
-                 gap: 0 1em;
-            }
+            .item-price { text-align: left; }
+            .price-grid { gap: 0 1em; }
         }
-
     </style>
 </head>
 <body>
+
+    <div id="preloader">
+        <div id="loading-text">> DECRYPTING MENU</div>
+    </div>
 
     <canvas id="matrix-bg"></canvas>
 
@@ -243,176 +305,53 @@
             <button class="tab-button" data-tab="snacks">Late Snacks</button>
         </div>
 
+        <div id="accessing-message"></div>
+
         <div class="tab-content active" id="cocktails">
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Purple Nurple">Purple Nurple</span><span class="item-price">$18</span></div>
-                <div class="ingredients">Blue curacao, vodka, grenadine & lemonade</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Kirby">Kirby</span><span class="item-price">$18</span></div>
-                <div class="ingredients">Pink gin, butterscotch schnapps, lemonade & a dash of raspberry</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Frogger">Frogger</span><span class="item-price">$18</span></div>
-                <div class="ingredients">Midori, vodka, blue curacao, pineapple juice & a dash of lime juice</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Expresso Martini">Expresso Martini</span><span class="item-price">$18</span></div>
-                <div class="ingredients">Vodka, kahlua with cold brew expresso</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Long Island">Long Island</span><span class="item-price">$22</span></div>
-                <div class="ingredients">Vodka, gin, bacardi, tequila triple sec with a dash of lemon juice & coke</div>
-            </div>
-            <div class="menu-item"><div class="item-header"><span class="item-name" title="Red Lotus">Red Lotus</span><span class="item-price">$22</span></div>
-                <div class="ingredients">Vodka, lychee liqueur, cranberry juice & a dash of lime juice</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Get Flipp'd">Get Flipp'd</span><span class="item-price">$22</span></div>
-                <div class="ingredients">Vodka, gin, bacardi, tequila, blue curacao with a dash of lemon juice & lemonade</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Watermelon Sour">Watermelon Sour</span><span class="item-price">$24</span></div>
-                <div class="ingredients">Midori, triple sec, watermelon liqueur, lemonade, raspberry and a sprinkle of citric acid</div>
-            </div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Purple Nurple">Purple Nurple</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Blue curacao, vodka, grenadine & lemonade"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Kirby">Kirby</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Pink gin, butterscotch schnapps, lemonade & a dash of raspberry"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Frogger">Frogger</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Midori, vodka, blue curacao, pineapple juice & a dash of lime juice"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Expresso Martini">Expresso Martini</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Vodka, kahlua with cold brew expresso"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Long Island">Long Island</span><span class="item-price">$22</span></div><div class="ingredients" data-original-text="Vodka, gin, bacardi, tequila triple sec with a dash of lemon juice & coke"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Red Lotus">Red Lotus</span><span class="item-price">$22</span></div><div class="ingredients" data-original-text="Vodka, lychee liqueur, cranberry juice & a dash of lime juice"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Get Flipp'd">Get Flipp'd</span><span class="item-price">$22</span></div><div class="ingredients" data-original-text="Vodka, gin, bacardi, tequila, blue curacao with a dash of lemon juice & lemonade"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Watermelon Sour">Watermelon Sour</span><span class="item-price">$24</span></div><div class="ingredients" data-original-text="Midori, triple sec, watermelon liqueur, lemonade, raspberry and a sprinkle of citric acid"></div></div>
         </div>
 
         <div class="tab-content" id="food">
-            <div class="kitchen-note">
-                Full food menu available until kitchen closes at 8:30pm
-            </div>
+            <div class="kitchen-note">Full food menu available until kitchen closes at 8:30pm</div>
             <h2 class="menu-category">Snacks</h2>
-            <div class="menu-item">
-                <div class="item-header">
-                    <span class="item-name" title="Hot Chips">Hot Chips</span>
-                    <span class="item-price price-grid">
-                        <span>SML</span><span>$8</span>
-                        <span>LRG</span><span>$10</span>
-                    </span>
-                </div>
-                <div class="ingredients">Served with sauce of your choice.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header">
-                    <span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span>
-                    <span class="item-price price-grid">
-                        <span>SML</span><span>$10</span>
-                        <span>LRG</span><span>$12</span>
-                    </span>
-                </div>
-                <div class="ingredients">Served with sauce of your choice.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div>
-                <div class="ingredients">American hot dog with tomato sauce and mustard.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Nuggets & Chips">Nuggets & Chips</span><span class="item-price">$10</span></div>
-                <div class="ingredients">4 chicken nuggets & chips served with sauce.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Spring Rolls">Spring Rolls</span><span class="item-price">$13</span></div>
-                <div class="ingredients">5 vegetarian spring rolls served with sweet chilli sauce.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Onion Rings">Onion Rings</span><span class="item-price">$10</span></div>
-                <div class="ingredients">Served with sauce of your choice.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Dagwood Dog">Dagwood Dog</span><span class="item-price">$8</span></div>
-                <div class="ingredients">Served with sauce of your choice.</div>
-            </div>
-
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Hot Chips">Hot Chips</span><span class="item-price price-grid"><span>SML</span><span>$8</span><span>LRG</span><span>$10</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span><span class="item-price price-grid"><span>SML</span><span>$10</span><span>LRG</span><span>$12</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="American hot dog with tomato sauce and mustard."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Nuggets & Chips">Nuggets & Chips</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="4 chicken nuggets & chips served with sauce."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Spring Rolls">Spring Rolls</span><span class="item-price">$13</span></div><div class="ingredients" data-original-text="5 vegetarian spring rolls served with sweet chilli sauce."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Onion Rings">Onion Rings</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="Served with sauce of your choice."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Dagwood Dog">Dagwood Dog</span><span class="item-price">$8</span></div><div class="ingredients" data-original-text="Served with sauce of your choice."></div></div>
             <h2 class="menu-category">Burgers</h2>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Get Flipp'd Burger">Get Flipp'd Burger</span><span class="item-price">$16</span></div>
-                <div class="ingredients">Juicy beef patty, american cheese, sliced pickles, fresh lettuce, tomato with special sauce served on a brioche bun. (Add $3 for GF)</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Cheese Burger">Cheese Burger</span><span class="item-price">$13</span></div>
-                <div class="ingredients">Juicy beef patty, american cheese, sliced pickles with special sauce served on a brioche bun. (Add $3 for GF)</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Chicken Burger">Chicken Burger</span><span class="item-price">$16</span></div>
-                <div class="ingredients">Crumbed chicken breast, american cheese, fresh lettuce, tomato with creamy aioli served on a brioche bun.</div>
-            </div>
-
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Get Flipp'd Burger">Get Flipp'd Burger</span><span class="item-price">$16</span></div><div class="ingredients" data-original-text="Juicy beef patty, american cheese, sliced pickles, fresh lettuce, tomato with special sauce served on a brioche bun. (Add $3 for GF)"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Cheese Burger">Cheese Burger</span><span class="item-price">$13</span></div><div class="ingredients" data-original-text="Juicy beef patty, american cheese, sliced pickles with special sauce served on a brioche bun. (Add $3 for GF)"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Chicken Burger">Chicken Burger</span><span class="item-price">$16</span></div><div class="ingredients" data-original-text="Crumbed chicken breast, american cheese, fresh lettuce, tomato with creamy aioli served on a brioche bun."></div></div>
             <h2 class="menu-category">Desserts</h2>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Churros">Churros</span><span class="item-price">$10</span></div>
-                <div class="ingredients">4 churros rolled in cinnamon sugar, served with chocolate dipping sauce</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Jam Donut Bites">Jam Donut Bites</span><span class="item-price">$10</span></div>
-                <div class="ingredients">3 fluffy mini donut bites oozing with jam dusted with powered sugar</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Apple Pie Bites">Apple Pie Bites</span><span class="item-price">$10</span></div>
-                <div class="ingredients">5 sweet cinnamon-spiced juicy apple pie bites served with a scoop of vanilla ice cream</div>
-            </div>
-            
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Churros">Churros</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="4 churros rolled in cinnamon sugar, served with chocolate dipping sauce"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Jam Donut Bites">Jam Donut Bites</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="3 fluffy mini donut bites oozing with jam dusted with powered sugar"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Apple Pie Bites">Apple Pie Bites</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="5 sweet cinnamon-spiced juicy apple pie bites served with a scoop of vanilla ice cream"></div></div>
             <h2 class="menu-category">Milkshakes</h2>
-             <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Milkshakes">Milkshakes</span><span class="item-price">$10</span></div>
-                <div class="ingredients">Chocolate, Strawberry, Vanilla, and Caramel served with whipped cream.</div>
-            </div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Milkshakes">Milkshakes</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="Chocolate, Strawberry, Vanilla, and Caramel served with whipped cream."></div></div>
         </div>
         
         <div class="tab-content" id="snacks">
-            <div class="kitchen-note">
-                Available until 1 hr before bar close
-            </div>
-            <div class="menu-item">
-                <div class="item-header">
-                    <span class="item-name" title="Hot Chips">Hot Chips</span>
-                    <span class="item-price price-grid">
-                        <span>SML</span><span>$8</span>
-                        <span>LRG</span><span>$10</span>
-                    </span>
-                </div>
-                <div class="ingredients">Served with sauce of your choice</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header">
-                    <span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span>
-                    <span class="item-price price-grid">
-                        <span>SML</span><span>$10</span>
-                        <span>LRG</span><span>$12</span>
-                    </span>
-                </div>
-                <div class="ingredients">Served with sauce of your choice</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div>
-                <div class="ingredients">American hot dog with tomato sauce and mustard.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Nuggets & Chips">Nuggets & Chips</span><span class="item-price">$10</span></div>
-                <div class="ingredients">5 chicken nuggets & chips served with sauce.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Spring Rolls">Spring Rolls</span><span class="item-price">$13</span></div>
-                <div class="ingredients">5 vegetarian spring rolls served with sweet chilli sauce.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Onion Rings">Onion Rings</span><span class="item-price">$10</span></div>
-                <div class="ingredients">Served with sauce of your choice.</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Dagwood Dog">Dagwood Dog</span><span class="item-price">$8</span></div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Churros">Churros</span><span class="item-price">$10</span></div>
-                <div class="ingredients">4 churros rolled in cinnamon sugar, served with chocolate dipping sauce</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Jam Donut Bites">Jam Donut Bites</span><span class="item-price">$10</span></div>
-                <div class="ingredients">5 fluffy mini donut bites oozing with jam dusted with powered sugar</div>
-            </div>
-            <div class="menu-item">
-                <div class="item-header"><span class="item-name" title="Apple Pie Bites">Apple Pie Bites</span><span class="item-price">$10</span></div>
-                <div class="ingredients">5 sweet cinnamon-spiced juicy apple pie bites served with a scoop of vanilla ice cream</div>
-            </div>
+            <div class="kitchen-note">Available until 1 hr before bar close</div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Hot Chips">Hot Chips</span><span class="item-price price-grid"><span>SML</span><span>$8</span><span>LRG</span><span>$10</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span><span class="item-price price-grid"><span>SML</span><span>$10</span><span>LRG</span><span>$12</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="American hot dog with tomato sauce and mustard."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Nuggets & Chips">Nuggets & Chips</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="4 chicken nuggets & chips served with sauce."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Spring Rolls">Spring Rolls</span><span class="item-price">$13</span></div><div class="ingredients" data-original-text="5 vegetarian spring rolls served with sweet chilli sauce."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Onion Rings">Onion Rings</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="Served with sauce of your choice."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Dagwood Dog">Dagwood Dog</span><span class="item-price">$8</span></div><div class="ingredients" data-original-text="Served with sauce of your choice."></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Churros">Churros</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="4 churros rolled in cinnamon sugar, served with chocolate dipping sauce"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Jam Donut Bites">Jam Donut Bites</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="3 fluffy mini donut bites oozing with jam dusted with powered sugar"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Apple Pie Bites">Apple Pie Bites</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="5 sweet cinnamon-spiced juicy apple pie bites served with a scoop of vanilla ice cream"></div></div>
         </div>
         
         <div class="tab-content" id="on-tap">
@@ -422,102 +361,50 @@
     </div>
 
     <script>
-        // --- On-Tap Data ---
-        const tapData = [
-            {
-                type: "Beer",
-                name: "Hahn SuperDry 3.5",
-                description: "Low-carb, crisp mid-strength lager that’s easy to drink all day.",
-                abv: "3.5%",
-                schooner: "$10",
-                pint: "$12"
-            },
-            {
-                type: "Beer",
-                name: "Stone & Wood Pacific Ale",
-                description: "Tropical, juicy, and breezy pale ale—an Aussie classic.",
-                abv: "4.4%",
-                schooner: "$12",
-                pint: "$15"
-            },
-            {
-                type: "Beer",
-                name: "Fixation IPA",
-                description: "Bold, hoppy, and punchy West Coast IPA with citrus and pine.",
-                abv: "6.4%",
-                schooner: "$12",
-                pint: "$14"
-            },
-            {
-                type: "Other",
-                name: "James Squire Ginger Beer",
-                description: "Spicy, zesty Aussie ginger beer—sweet, bold, and ultra-refreshing.",
-                abv: "4.0%",
-                schooner: "$13",
-                pint: "$15"
-            },
-            {
-                type: "Other",
-                name: "Kirin Hyoketsu",
-                description: "Japanese vodka soda bursting with frozen-fresh lemon flavour and a crisp, clean finish.",
-                abv: "6.0%",
-                schooner: "$13",
-                pint: "$15"
-            },
-			{
-                type: "Other",
-                name: "Byron Bay Brewery Peach & Mango Seltzer",
-                description: "Fizzy, fruity, and light—pure summer vibes in every sip.",
-                abv: "4.0%",
-                schooner: "$13",
-                pint: "$15"
-            }
-        ];
-
-        // --- Main App Logic ---
         document.addEventListener('DOMContentLoaded', () => {
-            
+            // VIBE FEATURE: Initialize Preloader
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 2000); // 2-second minimum display
+
+            // --- App Variables ---
             const container = document.querySelector('.container');
             const tabs = document.querySelector('.tabs');
+            const accessingMessage = document.getElementById('accessing-message');
+            let decryptInterval;
 
-            // --- Tab Navigation Logic ---
-            tabs.addEventListener('click', (event) => {
-                const clickedButton = event.target.closest('.tab-button');
-                if (!clickedButton) return;
+            // VIBE FEATURE: Text Decryption Function
+            function decryptText(element) {
+                const originalText = element.getAttribute('data-original-text');
+                if (!originalText) return;
+                const chars = '!<>-_\\/[]{}—=+*^?#________';
+                let progress = 0;
+                element.textContent = '';
+                if (decryptInterval) clearInterval(decryptInterval);
 
-                // Collapse any open menu items before switching tabs
-                container.querySelectorAll('.menu-item.active').forEach(item => {
-                    item.classList.remove('active');
-                });
-
-                tabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-                clickedButton.classList.add('active');
-                const targetTab = clickedButton.getAttribute('data-tab');
-                document.getElementById(targetTab).classList.add('active');
-            });
-
-            // --- Accordion Menu Item Logic ---
-            container.addEventListener('click', (event) => {
-                const menuItem = event.target.closest('.menu-item');
-                if (menuItem) {
-                    // This prevents clicks on links inside ingredients from closing the accordion
-                    if (event.target.closest('.ingredients a')) {
-                        return;
+                decryptInterval = setInterval(() => {
+                    element.textContent = originalText.slice(0, progress) + 
+                        Array.from({ length: originalText.length - progress }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                    progress += 1;
+                    if (progress > originalText.length) {
+                        clearInterval(decryptInterval);
                     }
-                    // Don't toggle if the click is on the header itself, only on the item
-                    if (event.target.classList.contains('menu-item') || event.target.closest('.item-header')) {
-                         menuItem.classList.toggle('active');
-                    }
-                }
-            });
+                }, 20);
+            }
+            
+            // --- On-Tap Data & Builder ---
+            const tapData = [
+                { type: "Beer", name: "Hahn SuperDry 3.5", description: "Low-carb, crisp mid-strength lager that’s easy to drink all day.", abv: "3.5%", schooner: "$10", pint: "$12" },
+                { type: "Beer", name: "Stone & Wood Pacific Ale", description: "Tropical, juicy, and breezy pale ale—an Aussie classic.", abv: "4.4%", schooner: "$12", pint: "$15" },
+                { type: "Beer", name: "Fixation IPA", description: "Bold, hoppy, and punchy West Coast IPA with citrus and pine.", abv: "6.4%", schooner: "$12", pint: "$14" },
+                { type: "Other", name: "James Squire Ginger Beer", description: "Spicy, zesty Aussie ginger beer—sweet, bold, and ultra-refreshing.", abv: "4.0%", schooner: "$13", pint: "$15" },
+                { type: "Other", name: "Kirin Hyoketsu", description: "Japanese vodka soda bursting with frozen-fresh lemon flavour and a crisp, clean finish.", abv: "6.0%", schooner: "$13", pint: "$15" },
+                { type: "Other", name: "Byron Bay Brewery Peach & Mango Seltzer", description: "Fizzy, fruity, and light—pure summer vibes in every sip.", abv: "4.0%", schooner: "$13", pint: "$15" }
+            ];
 
-            // --- On-Tap List Builder ---
             function populateTaps(taps) {
                 const tapListContainer = document.getElementById('on-tap-list');
                 if (!tapListContainer) return;
-
                 let content = '';
                 let currentType = '';
 
@@ -538,17 +425,60 @@
                                     <span>Pint</span><span>${tap.pint}</span>
                                 </span>
                             </div>
-                            <div class="ingredients">${tap.description}</div>
+                            <div class="ingredients" data-original-text="${tap.description}"></div>
                         </div>
                     `;
                 });
-
                 tapListContainer.innerHTML = content;
             }
-
             populateTaps(tapData);
-        });
 
+
+            // --- Event Listeners ---
+            tabs.addEventListener('click', (event) => {
+                const clickedButton = event.target.closest('.tab-button');
+                if (!clickedButton) return;
+
+                const targetTabId = clickedButton.getAttribute('data-tab');
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab && activeTab.id === targetTabId) return;
+
+                // UX IMPROVEMENT: Close all open items before switching tabs
+                container.querySelectorAll('.menu-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                container.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+                accessingMessage.textContent = `> ACCESSING SECTOR: ${targetTabId.toUpperCase()}`;
+                accessingMessage.style.display = 'block';
+
+                setTimeout(() => {
+                    accessingMessage.style.display = 'none';
+                    tabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    clickedButton.classList.add('active');
+                    const targetTab = document.getElementById(targetTabId);
+                    targetTab.classList.add('active');
+                    targetTab.style.display = 'block';
+                }, 600);
+            });
+
+            container.addEventListener('click', (event) => {
+                const menuItem = event.target.closest('.menu-item');
+                if (!menuItem) return;
+                if (event.target.closest('.ingredients a')) return;
+
+                const ingredientsDiv = menuItem.querySelector('.ingredients');
+                if (!ingredientsDiv) return;
+
+                const isOpening = !menuItem.classList.contains('active');
+                menuItem.classList.toggle('active');
+
+                if (isOpening) {
+                    decryptText(ingredientsDiv);
+                }
+            });
+        });
 
         // --- Matrix Digital Rain Background ---
         const canvas = document.getElementById('matrix-bg');
@@ -583,7 +513,6 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-
     </script>
 </body>
 </html>
