@@ -90,7 +90,9 @@
             background: rgba(10, 25, 10, 0.5);
             border: 1px solid rgba(0, 255, 65, 0.5);
             backdrop-filter: blur(5px);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
+            /* --- Rounded Edges Added --- */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
             position: relative;
             z-index: 1;
             opacity: 0;
@@ -110,6 +112,15 @@
             margin-bottom: 20px;
             text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00ff41, 0 0 30px #00ff41;
             animation: glitch-anim 3s infinite;
+        }
+
+        /* --- Title Icon Added --- */
+        h1::before {
+            content: ';>';
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff41;
+            margin-right: 0.3em;
+            text-shadow: 0 0 5px #00ff41;
         }
 
         .tabs {
@@ -216,8 +227,6 @@
         .price-grid span:nth-child(even) {
             justify-self: end;
         }
-
-        /* == UI POLISH: SMOOTH ACCORDION ANIMATION == */
         .ingredients {
             max-height: 0;
             overflow: hidden;
@@ -231,11 +240,10 @@
             word-wrap: break-word;
         }
         .menu-item.active .ingredients {
-            max-height: 20em; /* Generous max height for animation */
+            max-height: 20em;
             padding-top: 15px;
             margin-top: 10px;
         }
-        
         .menu-item.active .item-name {
             white-space: normal;
             overflow: visible;
@@ -269,7 +277,6 @@
             color: #9affab;
             font-size: 0.9em;
         }
-        
         .system-status {
             margin-top: 40px;
             padding-top: 20px;
@@ -288,7 +295,6 @@
             color: #ff4100;
             font-weight: bold;
         }
-
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
             .item-header {
@@ -385,11 +391,11 @@
         <footer class="system-status">
             <p>> LOCAL TIME: <span id="live-time">--:--:--</span></p>
             <p>> KITCHEN STATUS: <span id="kitchen-status">...</span></p>
-            <p>> WI-FI_NETWORK: Flippd_Guest / PW: get_flippd</p>
+            <p>> WI-FI_NETWORK: Flippd_Guest / PW: xxxx </p>
         </footer>
     </div>
 
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.body.classList.add('loaded');
@@ -533,6 +539,7 @@
             });
         });
 
+        // --- Matrix Digital Rain Background ---
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -549,6 +556,7 @@
             ctx.font = fontSize + 'px monospace';
             for (let i = 0; i < rainDrops.length; i++) {
                 const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                // const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length)); // This was the duplicated line that caused the error
                 ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
                 if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     rainDrops[i] = 0;
