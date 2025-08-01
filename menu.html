@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d0d0d">
     <title>Flipp'd - Menu</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' x='-0.1em' font-size='90' font-family='sans-serif' fill='%2300ff41'>;</text><text y='0.9em' x='0.35em' font-size='90' font-family='sans-serif' fill='%2300ff41'>P</text></svg>">
     <style>
-        /* --- Base & Glitch Styling --- */
         @keyframes glitch-anim {
             0% { transform: translate(0); }
             20% { transform: translate(-3px, 3px); clip-path: polygon(0 2%, 100% 2%, 100% 42%, 0 42%); }
@@ -21,7 +22,7 @@
         body {
             font-family: 'Courier New', Courier, monospace;
             background-color: #0d0d0d;
-            color: #00ff41; /* Cyberpunk green */
+            color: #00ff41;
             margin: 0;
             padding: 20px;
             overflow-x: hidden;
@@ -31,7 +32,6 @@
             min-height: 100vh;
         }
 
-        /* VIBE FEATURE: CRT SCANLINES */
         body::after {
             content: "";
             position: fixed;
@@ -44,7 +44,6 @@
             z-index: 10000;
         }
 
-        /* VIBE FEATURE: Custom Loading Animation */
         #preloader {
             position: fixed;
             top: 0;
@@ -73,7 +72,6 @@
             pointer-events: none;
         }
 
-        /* --- Digital Rain Background --- */
         #matrix-bg {
             position: fixed;
             top: 0;
@@ -84,7 +82,6 @@
             opacity: 0.5;
         }
 
-        /* --- Main Menu Container --- */
         .container {
             max-width: 700px;
             width: 95%;
@@ -115,7 +112,6 @@
             animation: glitch-anim 3s infinite;
         }
 
-        /* --- Tab Navigation --- */
         .tabs {
             display: flex;
             justify-content: space-around;
@@ -146,7 +142,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* VIBE FEATURE: "Accessing..." Message Style */
         #accessing-message {
             display: none;
             text-align: center;
@@ -159,12 +154,17 @@
             animation: blink 1s step-end infinite;
         }
 
-        /* --- Menu Item Styling --- */
         .menu-item {
             padding: 18px 10px;
-            border-bottom: 1px dashed rgba(0, 255, 65, 0.3);
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            background: repeating-linear-gradient(90deg, rgba(0, 255, 65, 0.3) 0, rgba(0, 255, 65, 0.3) 5px, transparent 5px, transparent 10px);
+            background-repeat: no-repeat;
+            background-position: 0 100%;
+            background-size: 0% 1px;
+            transition: background-color 0.2s ease, background-size 0.5s ease-in-out;
+        }
+        .menu-item.item-visible {
+             background-size: 100% 1px;
         }
         .menu-item:last-of-type {
             border-bottom: none;
@@ -207,7 +207,6 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
-        
         .price-grid {
             display: grid;
             grid-template-columns: auto auto;
@@ -217,7 +216,6 @@
         .price-grid span:nth-child(even) {
             justify-self: end;
         }
-
         .ingredients {
             display: none;
             padding: 15px 0 5px 15px;
@@ -229,13 +227,11 @@
             word-wrap: break-word;
         }
         .menu-item.active .ingredients { display: block; }
-        
         .menu-item.active .item-name {
             white-space: normal;
             overflow: visible;
             text-overflow: clip;
         }
-
         h2.menu-category {
             color: #e0e0e0;
             text-align: center;
@@ -265,6 +261,26 @@
             font-size: 0.9em;
         }
         
+        /* == VIBE FEATURE: SYSTEM STATUS FOOTER == */
+        .system-status {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 255, 65, 0.5);
+            font-size: 0.9rem;
+            color: #9affab;
+        }
+        .system-status p {
+            margin: 5px 0;
+        }
+        .status-online {
+            color: #00ff41;
+            font-weight: bold;
+        }
+        .status-offline {
+            color: #ff4100;
+            font-weight: bold;
+        }
+
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
             .item-header {
@@ -308,10 +324,10 @@
         <div id="accessing-message"></div>
 
         <div class="tab-content active" id="cocktails">
-            <div class="menu-item"><div class="item-header"><span class="item-name" title="Purple Nurple">Purple Nurple</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Blue curacao, vodka, grenadine & lemonade"></div></div>
+             <div class="menu-item"><div class="item-header"><span class="item-name" title="Purple Nurple">Purple Nurple</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Blue curacao, vodka, grenadine & lemonade"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Kirby">Kirby</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Pink gin, butterscotch schnapps, lemonade & a dash of raspberry"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Frogger">Frogger</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Midori, vodka, blue curacao, pineapple juice & a dash of lime juice"></div></div>
-            <div class="menu-item"><div class="item-header"><span class="item-name" title="Espresso Martini">Espresso Martini</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Vodka, kahlua with cold brew espresso"></div></div>
+            <div class="menu-item"><div class="item-header"><span class="item-name" title="Expresso Martini">Expresso Martini</span><span class="item-price">$18</span></div><div class="ingredients" data-original-text="Vodka, kahlua with cold brew expresso"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Long Island">Long Island</span><span class="item-price">$22</span></div><div class="ingredients" data-original-text="Vodka, gin, bacardi, tequila triple sec with a dash of lemon juice & coke"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Red Lotus">Red Lotus</span><span class="item-price">$22</span></div><div class="ingredients" data-original-text="Vodka, lychee liqueur, cranberry juice & a dash of lime juice"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Get Flipp'd">Get Flipp'd</span><span class="item-price">$22</span></div><div class="ingredients" data-original-text="Vodka, gin, bacardi, tequila, blue curacao with a dash of lemon juice & lemonade"></div></div>
@@ -341,7 +357,7 @@
         </div>
         
         <div class="tab-content" id="snacks">
-            <div class="kitchen-note">Available until 1 hr before bar close</div>
+             <div class="kitchen-note">Available until 1 hr before bar close</div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Hot Chips">Hot Chips</span><span class="item-price price-grid"><span>SML</span><span>$8</span><span>LRG</span><span>$10</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Sweet Potato Fries">Sweet Potato Fries</span><span class="item-price price-grid"><span>SML</span><span>$10</span><span>LRG</span><span>$12</span></span></div><div class="ingredients" data-original-text="Served with sauce of your choice"></div></div>
             <div class="menu-item"><div class="item-header"><span class="item-name" title="Hotdog">Hotdog</span><span class="item-price">$10</span></div><div class="ingredients" data-original-text="American hot dog with tomato sauce and mustard."></div></div>
@@ -358,22 +374,25 @@
             <div id="on-tap-list"></div>
         </div>
 
+        <footer class="system-status">
+            <p>> LOCAL TIME: <span id="live-time">--:--:--</span></p>
+            <p>> KITCHEN STATUS: <span id="kitchen-status">...</span></p>
+            <p>> WI-FI_NETWORK: N/A / PW: ...</p>
+        </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // VIBE FEATURE: Initialize Preloader
             setTimeout(() => {
                 document.body.classList.add('loaded');
-            }, 2000); // 2-second minimum display
+                animateItemsIn(document.querySelector('.tab-content.active'));
+            }, 2000);
 
-            // --- App Variables ---
             const container = document.querySelector('.container');
             const tabs = document.querySelector('.tabs');
             const accessingMessage = document.getElementById('accessing-message');
             let decryptInterval;
 
-            // VIBE FEATURE: Text Decryption Function
             function decryptText(element) {
                 const originalText = element.getAttribute('data-original-text');
                 if (!originalText) return;
@@ -381,25 +400,34 @@
                 let progress = 0;
                 element.textContent = '';
                 if (decryptInterval) clearInterval(decryptInterval);
-
                 decryptInterval = setInterval(() => {
                     element.textContent = originalText.slice(0, progress) + 
                         Array.from({ length: originalText.length - progress }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-                    progress += 1;
-                    if (progress > originalText.length) {
+                    progress += 1.5;
+                    if (progress >= originalText.length) {
+                        element.textContent = originalText;
                         clearInterval(decryptInterval);
                     }
                 }, 20);
             }
+
+            function animateItemsIn(tabElement) {
+                if (!tabElement) return;
+                const itemsToAnimate = tabElement.querySelectorAll('.menu-item');
+                itemsToAnimate.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('item-visible');
+                    }, index * 75);
+                });
+            }
             
-            // --- On-Tap Data & Builder ---
             const tapData = [
-                { type: "Beer", name: "Hahn SuperDry 3.5", description: "Low-carb, crisp mid-strength lager that’s easy to drink all day.", abv: "3.5%", schooner: "$10", pint: "$12" },
-                { type: "Beer", name: "Stone & Wood Pacific Ale", description: "Tropical, juicy, and breezy pale ale—an Aussie classic.", abv: "4.4%", schooner: "$12", pint: "$15" },
-                { type: "Beer", name: "Fixation IPA", description: "Bold, hoppy, and punchy West Coast IPA with citrus and pine.", abv: "6.4%", schooner: "$12", pint: "$14" },
-                { type: "Other", name: "James Squire Ginger Beer", description: "Spicy, zesty Aussie ginger beer—sweet, bold, and ultra-refreshing.", abv: "4.0%", schooner: "$13", pint: "$15" },
-                { type: "Other", name: "Kirin Hyoketsu", description: "Japanese vodka soda bursting with frozen-fresh lemon flavour and a crisp, clean finish.", abv: "6.0%", schooner: "$13", pint: "$15" },
-                { type: "Other", name: "Byron Bay Brewery Peach & Mango Seltzer", description: "Fizzy, fruity, and light—pure summer vibes in every sip.", abv: "4.0%", schooner: "$13", pint: "$15" }
+                { type: "Beer", name: "Hahn SuperDry 3.5", description: "Low-carb, crisp mid-strength lager.", abv: "3.5%", schooner: "$10", pint: "$12" },
+                { type: "Beer", name: "Stone & Wood Pacific Ale", description: "Tropical, juicy, and breezy pale ale.", abv: "4.4%", schooner: "$12", pint: "$15" },
+                { type: "Beer", name: "Fixation IPA", description: "Bold, hoppy, and punchy West Coast IPA.", abv: "6.4%", schooner: "$12", pint: "$14" },
+                { type: "Other", name: "James Squire Ginger Beer", description: "Spicy, zesty Aussie ginger beer.", abv: "4.0%", schooner: "$13", pint: "$15" },
+                { type: "Other", name: "Kirin Hyoketsu", description: "Japanese vodka soda with frozen-fresh lemon.", abv: "6.0%", schooner: "$13", pint: "$15" },
+                { type: "Other", name: "Byron Bay Seltzer", description: "Fizzy, fruity, and light peach & mango.", abv: "4.0%", schooner: "$13", pint: "$15" }
             ];
 
             function populateTaps(taps) {
@@ -407,7 +435,6 @@
                 if (!tapListContainer) return;
                 let content = '';
                 let currentType = '';
-
                 taps.forEach(tap => {
                     if (tap.type !== currentType) {
                         currentType = tap.type;
@@ -433,20 +460,44 @@
             }
             populateTaps(tapData);
 
+            // --- System Status Footer Logic ---
+            const timeEl = document.getElementById('live-time');
+            const kitchenStatusEl = document.getElementById('kitchen-status');
+            
+            function updateKitchenStatus() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                // Kitchen closes at 8:30 PM (20:30)
+                if (hours > 20 || (hours === 20 && minutes >= 30)) {
+                    kitchenStatusEl.textContent = "OFFLINE [CLOSES @ 8:30PM]";
+                    kitchenStatusEl.className = 'status-offline';
+                } else {
+                    kitchenStatusEl.textContent = "ONLINE";
+                    kitchenStatusEl.className = 'status-online';
+                }
+            }
+
+            function updateTime() {
+                const now = new Date().toLocaleTimeString('en-AU');
+                timeEl.textContent = now;
+            }
+            
+            updateKitchenStatus();
+            setInterval(updateTime, 1000);
+            updateTime();
+
 
             // --- Event Listeners ---
             tabs.addEventListener('click', (event) => {
                 const clickedButton = event.target.closest('.tab-button');
                 if (!clickedButton) return;
-
                 const targetTabId = clickedButton.getAttribute('data-tab');
                 const activeTab = document.querySelector('.tab-content.active');
                 if (activeTab && activeTab.id === targetTabId) return;
 
-                // UX IMPROVEMENT: Close all open items before switching tabs
-                container.querySelectorAll('.menu-item.active').forEach(item => {
-                    item.classList.remove('active');
-                });
+                container.querySelectorAll('.menu-item.active').forEach(item => item.classList.remove('active'));
+                container.querySelectorAll('.menu-item.item-visible').forEach(item => item.classList.remove('item-visible'));
 
                 container.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
                 accessingMessage.textContent = `> ACCESSING SECTOR: ${targetTabId.toUpperCase()}`;
@@ -460,6 +511,7 @@
                     const targetTab = document.getElementById(targetTabId);
                     targetTab.classList.add('active');
                     targetTab.style.display = 'block';
+                    animateItemsIn(targetTab);
                 }, 600);
             });
 
@@ -467,13 +519,12 @@
                 const menuItem = event.target.closest('.menu-item');
                 if (!menuItem) return;
                 if (event.target.closest('.ingredients a')) return;
-
                 const ingredientsDiv = menuItem.querySelector('.ingredients');
-                if (!ingredientsDiv) return;
-
+                if (!ingredientsDiv || !ingredientsDiv.getAttribute('data-original-text')) {
+                    return;
+                }
                 const isOpening = !menuItem.classList.contains('active');
                 menuItem.classList.toggle('active');
-
                 if (isOpening) {
                     decryptText(ingredientsDiv);
                 }
@@ -485,13 +536,11 @@
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
         const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const rainDrops = [];
         for (let x = 0; x < columns; x++) { rainDrops[x] = 1; }
-
         const draw = () => {
             ctx.fillStyle = 'rgba(13, 13, 13, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -506,9 +555,7 @@
                 rainDrops[i]++;
             }
         };
-        
         let rainInterval = setInterval(draw, 33);
-        
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
